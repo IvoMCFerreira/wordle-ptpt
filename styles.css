@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#wordle-container {
+    text-align: center;
+}
+
+#word-display {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+#feedback {
+    margin-top: 10px;
+}
