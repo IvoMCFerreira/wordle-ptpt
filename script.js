@@ -1,10 +1,11 @@
+// script.js
 // Load words from an external file using Fetch API
 async function loadWords() {
     try {
         const response = await fetch('words.txt');
         const data = await response.text();
         const allWords = data.split('\n').filter(word => word.trim() !== '');
-        
+
         // Filter for 5-letter words
         const fiveLetterWords = allWords.filter(word => word.length === 5);
 
@@ -17,7 +18,7 @@ async function loadWords() {
 
 let words;
 let targetWord;
-let guessedWord = [];
+let guessedWords = [];
 let incorrectGuesses = 0;
 
 async function startGame() {
@@ -28,7 +29,7 @@ async function startGame() {
     }
 
     targetWord = getRandomWord();
-    guessedWord = Array.from({ length: 5 }, () => '-');
+    guessedWords = [];
     incorrectGuesses = 0;
     updateDisplay();
 }
@@ -39,35 +40,49 @@ function getRandomWord() {
 
 function updateDisplay() {
     const wordGrid = document.getElementById("word-grid");
+
+    // Clear the content of the wordGrid element
     wordGrid.innerHTML = '';
 
-    guessedWord.forEach(letter => {
-        const letterDiv = document.createElement('div');
-        letterDiv.textContent = letter;
-        wordGrid.appendChild(letterDiv);
+    guessedWords.forEach(guessedWord => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = "word-row";
+
+        guessedWord.split('').forEach(letter => {
+            const cellDiv = document.createElement('div');
+            cellDiv.className = "word-cell";
+            cellDiv.textContent = letter;
+            rowDiv.appendChild(cellDiv);
+        });
+
+        wordGrid.appendChild(rowDiv);
     });
 
     document.getElementById("feedback").textContent = `Incorrect guesses: ${incorrectGuesses}`;
 }
 
+
 function checkGuess() {
     const guessInput = document.getElementById("guess-input").value.toLowerCase();
     if (guessInput.length === 5 && /^[a-z]+$/.test(guessInput)) {
-        if (guessInput === targetWord) {
-            alert("Congratulations! You guessed the word!");
-            startGame();
-        } else {
-            incorrectGuesses++;
-            guessedWord = guessInput.split('');
-            updateDisplay();
-            if (incorrectGuesses >= 6) {
-                alert(`Sorry, you've run out of attempts. The correct word was ${targetWord}.`);
+        if (guessedWords.length < 6) {
+            if (guessInput === targetWord) {
+                alert("Congratulations! You guessed the word!");
                 startGame();
+            } else {
+                incorrectGuesses++;
+                guessedWords.push(guessInput);
+                updateDisplay();
+                if (guessedWords.length >= 6) {
+                    alert(`Sorry, you've run out of attempts. The correct word was ${targetWord}.`);
+                    startGame();
+                }
             }
         }
     } else {
         alert("Please enter a valid 5-letter word.");
     }
 }
+
 
 window.onload = startGame;
