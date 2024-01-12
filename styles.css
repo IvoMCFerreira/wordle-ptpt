@@ -11,11 +11,27 @@ body {
     text-align: center;
 }
 
-#word-display {
-    font-size: 2em;
-    margin-bottom: 10px;
+#word-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(6, 50px);
+    gap: 5px;
+    margin: 10px 0;
+}
+
+#word-grid div {
+    background-color: lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
 }
 
 #feedback {
     margin-top: 10px;
+}
+
+.word-row {
+    display: flex;
+    margin-bottom: 5px;
 }

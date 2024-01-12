@@ -17,7 +17,7 @@ async function loadWords() {
 
 let words;
 let targetWord;
-let guessedWord = "-----";
+let guessedWord = [];
 let incorrectGuesses = 0;
 
 async function startGame() {
@@ -28,7 +28,7 @@ async function startGame() {
     }
 
     targetWord = getRandomWord();
-    guessedWord = "-----";
+    guessedWord = Array.from({ length: 5 }, () => '-');
     incorrectGuesses = 0;
     updateDisplay();
 }
@@ -38,7 +38,15 @@ function getRandomWord() {
 }
 
 function updateDisplay() {
-    document.getElementById("word-display").textContent = guessedWord;
+    const wordGrid = document.getElementById("word-grid");
+    wordGrid.innerHTML = '';
+
+    guessedWord.forEach(letter => {
+        const letterDiv = document.createElement('div');
+        letterDiv.textContent = letter;
+        wordGrid.appendChild(letterDiv);
+    });
+
     document.getElementById("feedback").textContent = `Incorrect guesses: ${incorrectGuesses}`;
 }
 
@@ -50,7 +58,7 @@ function checkGuess() {
             startGame();
         } else {
             incorrectGuesses++;
-            updateGuessedWord(guessInput);
+            guessedWord = guessInput.split('');
             updateDisplay();
             if (incorrectGuesses >= 6) {
                 alert(`Sorry, you've run out of attempts. The correct word was ${targetWord}.`);
@@ -59,14 +67,6 @@ function checkGuess() {
         }
     } else {
         alert("Please enter a valid 5-letter word.");
-    }
-}
-
-function updateGuessedWord(guess) {
-    for (let i = 0; i < 5; i++) {
-        if (targetWord[i] === guess[i]) {
-            guessedWord = guessedWord.substr(0, i) + guess[i] + guessedWord.substr(i + 1);
-        }
     }
 }
 
