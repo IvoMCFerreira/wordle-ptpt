@@ -11,7 +11,7 @@
     <div id="wordle-container">
         <div id="word-grid"></div>
         <div id="feedback">Incorrect guesses: 0</div>
-        <input type="text" id="guess-input" maxlength="5">
+        <input type="text" id="guess-input" maxlength="5" onkeypress="handleKeyPress(event)">
         <button onclick="checkGuess()">Submit Guess</button>
     </div>
     <script src="script.js"></script>
