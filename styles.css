@@ -47,3 +47,7 @@ body {
 .toast.show {
     opacity: 1;
 }
+
+.feedback {
+    margin-top: 10px;
+}

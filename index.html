@@ -10,7 +10,7 @@
 <body>
     <div id="wordle-container">
         <div id="word-grid"></div>
-        <div id="feedback"></div>
+        <div id="feedback" class="toast"></div> <!-- Add the class "toast" here -->
         <input type="text" id="guess-input" maxlength="5" onkeypress="handleKeyPress(event)">
         <button onclick="checkGuess()">Submit Guess</button>
     </div>

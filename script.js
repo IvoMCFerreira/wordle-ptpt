@@ -67,9 +67,21 @@ function showToast(message) {
     toast.textContent = message;
     document.body.appendChild(toast);
 
+    // Trigger a reflow to enable the transition
+    toast.offsetHeight;
+
+    // Add the "show" class to display the toast
+    toast.classList.add('show');
+
     // Remove the toast after 3 seconds
     setTimeout(() => {
-        document.body.removeChild(toast);
+        // Remove the "show" class to hide the toast
+        toast.classList.remove('show');
+
+        // Remove the toast after the transition completes
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
     }, 3000);
 }
 
