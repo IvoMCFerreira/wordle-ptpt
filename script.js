@@ -1,4 +1,3 @@
-// script.js
 // Load words from an external file using Fetch API
 async function loadWords() {
     try {
