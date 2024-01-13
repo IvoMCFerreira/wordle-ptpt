@@ -1,24 +1,23 @@
 // Load words from an external file using Fetch API
 async function loadWords() {
     try {
-        const response = await fetch('words.txt');
+        const response = await fetch('words2.txt');
         const data = await response.text();
-        const allWords = data.split('\n').filter(word => word.trim() !== '');
+        const allWords = data.split('\n').filter(word => word.trim().length === 5);
 
-        // Filter for 5-letter words
-        const fiveLetterWords = allWords.filter(word => word.length === 5);
-
-        return fiveLetterWords;
+        return allWords;
     } catch (error) {
         console.error('Error loading words:', error);
         return [];
     }
 }
 
+
 let words;
 let targetWord;
-let guessedWord;
+let guessedWords = [];
 let incorrectGuesses = 0;
+let rows;
 
 async function startGame() {
     words = await loadWords();
@@ -28,34 +27,63 @@ async function startGame() {
     }
 
     targetWord = getRandomWord();
-    guessedWord = Array(targetWord.length).fill('-');
+    guessedWords = Array.from({ length: 6 }, () => Array(targetWord.length).fill('-'));
     incorrectGuesses = 0;
+
+    // Create all rows at the beginning
+    rows = Array.from({ length: 6 }, createRow);
+
     updateDisplay();
 }
 
+function createRow() {
+    const rowDiv = document.createElement('div');
+    rowDiv.className = "word-row";
+
+    for (let i = 0; i < targetWord.length; i++) {
+        const cellDiv = document.createElement('div');
+        cellDiv.className = "word-cell";
+        rowDiv.appendChild(cellDiv);
+    }
+
+    return rowDiv;
+}
+
 function getRandomWord() {
-    return words[Math.floor(Math.random() * words.length)];
+    const fiveLetterWords = words.filter(word => word.length === 5);
+
+    if (fiveLetterWords.length === 0) {
+        console.error('No 5-letter words found in the word list.');
+        return ''; // Return an empty string or handle the error as needed
+    }
+
+    return fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)];
 }
 
 function updateDisplay() {
     const wordGrid = document.getElementById("word-grid");
 
-    const rowDiv = document.createElement('div');
-    rowDiv.className = "word-row";
+    // Clear the content of the wordGrid element
+    wordGrid.innerHTML = '';
 
-    guessedWord.forEach(letter => {
-        const cellDiv = document.createElement('div');
-        cellDiv.className = "word-cell";
-        cellDiv.textContent = letter;
-        rowDiv.appendChild(cellDiv);
+    // Append all rows to the wordGrid
+    rows.forEach(row => wordGrid.appendChild(row));
+
+    // Update the rows with guessed words
+    guessedWords.forEach((guessedWord, index) => {
+        const row = rows[index];
+        const wordCells = row.querySelectorAll('.word-cell');
+        guessedWord.forEach((letter, cellIndex) => {
+            wordCells[cellIndex].textContent = letter;
+        });
+        row.classList.remove('initial'); // Remove the "initial" class
     });
-
-    wordGrid.appendChild(rowDiv);
 
     // Clear the input field after each attempt
     document.getElementById("guess-input").value = '';
 
-    // Log incorrect guesses to the console
+    // Log correct word and incorrect guesses to the console
+    console.log(`Correct word: ${targetWord}`);
     console.log(`Incorrect guesses: ${incorrectGuesses}`);
 }
 
@@ -107,7 +135,17 @@ function checkGuess() {
 }
 
 function updateGuessedWord(guess) {
-    guessedWord = guess.split('');
+    const guessedWord = guess.split('');
+    const rowIndex = guessedWords.length;
+
+    if (rowIndex < rows.length) {
+        // Update the existing row
+        guessedWords[rowIndex] = guessedWord;
+    } else {
+        // If all rows are filled, remove the first row and add the new one
+        guessedWords.shift();
+        guessedWords.push(guessedWord);
+    }
 }
 
 function handleKeyPress(event) {

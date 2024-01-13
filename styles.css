@@ -50,3 +50,7 @@ body {
 .feedback {
     margin-top: 10px;
 }
+
+.word-row.initial {
+    display: none;
+}
